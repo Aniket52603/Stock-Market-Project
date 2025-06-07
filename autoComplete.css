@@ -1,0 +1,66 @@
+#suggestions {
+    position: absolute;
+    width: 100%; /* Matches input width */
+    max-height: 300px; /* Limits height with scrolling */
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none; /* Hidden by default */
+    border-radius: 8px; /* Rounded corners */
+    font-family:  'Nunito', sans-serif;  /* Change font */
+    font-size: 16px; /* Adjust text size */
+    font-weight: normal; /* Change weight: normal, bold, etc. */
+    color: #333; /* Text color */
+}
+/* Custom Scrollbar */
+#suggestions::-webkit-scrollbar {
+    width: 8px;
+}
+
+#suggestions::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#suggestions::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+#suggestions::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+/* Results Box */
+#results {
+    padding: 12px 15px;
+    margin-top: 30px;
+    margin-left: 5px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+    margin: 20px auto 20px 20px; /* Adds margin from left */
+}
+
+/* Hover Effect */
+#results:hover {
+    background: #f1f1f1; /* Light gray background */
+}
+
+/* Click Effect */
+#results:active {
+    background: #e5e5e5; /* Slightly darker gray */
+}
+
+/* Subtext Styling (Optional) */
+#results span {
+    font-size: 14px;
+    color: #777;
+    margin-left: 10px;
+}

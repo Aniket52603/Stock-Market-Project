@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradePro - Advanced Trading Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="autoComplete.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="line_chart_p.js"></script>
+    <script src="autoComplete_p.js"></script>
+    <script src="stock-login.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script src="combine.js"></script>
+<script src="watchlist.js"></script>
+<script src="summery.js
+"></script>
+
+
+
+</head>
+<body class="bg-gray-100">
+    <!-- Market Status Bar -->
+    <div class="bg-gray-900 text-white py-2">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center text-sm">
+                <div class="flex space-x-6">
+                    <span>S&P 500: <span class="text-green-500">+1.2%</span></span>
+                    <span>NASDAQ: <span class="text-green-500">+0.8%</span></span>
+                    <span>DOW: <span class="text-red-500">-0.3%</span></span>
+                </div>
+                <div>
+                    <span>Market Status: <span class="text-green-500">Open</span> | Last Updated: 14:30 EST</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <span class="text-2xl font-bold text-blue-600">TradePro</span>
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="stock-chart.html" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Dashboard</a>
+                        <a href="summery.html" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Markets</a>
+                        <a href="watchlist.html" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Watchlist</a>
+                        <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Portfolio</a>
+                        <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">News</a>
+                    </div>
+                </div>
+                <form class="flex items-center space-x-4" id="search-form">
+                    <div class="flex items-center space-x-4" id="searchForm">
+                        <input type="search" placeholder="Search stocks..." 
+                            id="query"
+                            class="bg-gray-100 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div id="suggestions"></div>
+                    <div id="results"></div>
+                </form>
+                <style>
+                    #query{
+                        margin-left: 350px;
+                    }
+                </style>
+                
+                <script>
+                document.getElementById("search-form").addEventListener("submit", function (event) {
+                    event.preventDefault(); // Prevents page refresh
+                
+                    let stockSymbol = document.getElementById("query").value.trim().toUpperCase(); // Convert input to uppercase
+                
+                    if (stockSymbol) {
+                        // Redirect to the chart page with stock symbol
+                        window.location.href = `stock-chart.html?symbol=${stockSymbol}`;
+                    }
+                });
+                </script>
+                
+               
+                  
+                
+          
+                
+                <button id="profile-btn" style="display: none;">Profile</button>
+        <!-- This button will change to a profile icon when logged in -->
+        <a id="auth-button" href="login.html" style="margin-top: 10px;">
+            Login/Sign In
+        </a>
+            </div>  
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Grid -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-12 gap-6">
+            <!-- Market Overview -->
+            <div class="col-span-12 lg:col-span-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <div class="buttons">
+                        <button onclick="fetchStockData('AAPL')" class="bg-gray-200 text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition-colors duration-300 AAPL-btn" id="AAPL-btn" >Apple (AAPL)</button>
+                        <button onclick="fetchStockData('TSLA')"class="bg-gray-200 text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition-colors duration-300 TSLA-btn" id="TSLA-btn">Tesla (TSLA)</button>
+                        <button onclick="fetchStockData('GOOGL')"class="bg-gray-200 text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-300 transition-colors duration-300 GOOGL-btn" id="GOOGL-btn">Google (GOOGL)</button>
+                    </div>
+                    <script>
+                        if(Symbol=="TSLA"){
+                        function fetchStockData(TSLA) {
+                            let element = document.getElementById("text-xl font-bold");
+                            element.textContent = "Text changed by JavaScript!";
+                        } }
+                    </script>
+        
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="chart-heading" class="text-xl font-bold">AAPL - Apple Inc.</h2>
+                      
+                    </div>
+                
+
+                    <style>
+                        #myChart {
+                            width: 100% !important;
+                            height: 100% !important;
+                            
+                        #chart-heading{
+                            margin-top: 5px;
+                        }
+                        }
+                    </style>
+                
+                    <div class="h-96 bg-gray-100 rounded-lg mb-4">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-600">Open</span>
+                            <div class="font-semibold">$176.15</div>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">High</span>
+                            <div class="font-semibold">$179.43</div>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Low</span>
+                            <div class="font-semibold">$175.82</div>
+                        </div>
+                        <div>
+                            <span class="text-gray-600">Volume</span>
+                            <div class="font-semibold">45.2M</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Movers -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold mb-4">Market Movers</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="font-semibold mb-3">Top Gainers</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded">
+                                    <div>
+                                        <div class="font-semibold">TSLA</div>
+                                        <div class="text-sm text-gray-600">Tesla Inc.</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-semibold">$242.15</div>
+                                        <div class="text-green-500">+5.8%</div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded">
+                                    <div>
+                                        <div class="font-semibold">NVDA</div>
+                                        <div class="text-sm text-gray-600">NVIDIA Corp.</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-semibold">$485.90</div>
+                                        <div class="text-green-500">+4.2%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold mb-3">Top Losers</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded">
+                                    <div>
+                                        <div class="font-semibold">META</div>
+                                        <div class="text-sm text-gray-600">Meta Platforms</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-semibold">$312.45</div>
+                                        <div class="text-red-500">-3.2%</div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded">
+                                    <div>
+                                        <div class="font-semibold">NFLX</div>
+                                        <div class="text-sm text-gray-600">Netflix Inc.</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-semibold">$425.70</div>
+                                        <div class="text-red-500">-2.8%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-span-12 lg:col-span-4 space-y-6">
+                <!-- Watchlist -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Watchlist</h2>
+                        <button class="text-blue-600 hover:text-blue-800">+ Add</button>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <div>
+                                <div class="font-semibold">MSFT</div>
+                                <div class="text-sm text-gray-600">Microsoft</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-semibold">$325.45</div>
+                                <div class="text-green-500">+1.2%</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <div>
+                                <div class="font-semibold">GOOGL</div>
+                                <div class="text-sm text-gray-600">Alphabet</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-semibold">$142.80</div>
+                                <div class="text-red-500">-0.5%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market News -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold mb-4">Market News</h2>
+                    <div class="space-y-4">
+                        <div class="border-b pb-4">
+                            <div class="text-sm text-gray-600 mb-1">2 hours ago</div>
+                            <a href="#" class="font-semibold hover:text-blue-600">Fed Signals Potential Rate Cut in Coming Months</a>
+                        </div>
+                        <div class="border-b pb-4">
+                            <div class="text-sm text-gray-600 mb-1">4 hours ago</div>
+                            <a href="#" class="font-semibold hover:text-blue-600">Tech Stocks Rally on Strong Earnings Reports</a>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-600 mb-1">6 hours ago</div>
+                            <a href="#" class="font-semibold hover:text-blue-600">Oil Prices Surge Amid Global Supply Concerns</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Analysis -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold mb-4">Technical Analysis</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span>RSI (14)</span>
+                            <span class="font-semibold">62.5</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>MACD</span>
+                            <span class="text-green-500 font-semibold">Bullish</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Moving Avg (50)</span>
+                            <span class="font-semibold">$174.32</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-blue-500 mb-4">TradePro</h3>
+                    <p class="text-gray-400">Advanced trading platform for professional investors.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Products</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-500">Stocks</a></li>
+                        <li><a href="#" class="hover:text-blue-500">ETFs</a></li>
+                        <li><a href="#" class="hover:text-blue-500">Options</a></li>
+                        <li><a href="#" class="hover:text-blue-500">Futures</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-500">Research</a></li>
+                        <li><a href="#" class="hover:text-blue-500">Market Analysis</a></li>
+                        <li><a href="#" class="hover:text-blue-500">Trading Guide</a></li>
+                        <li><a href="#" class="hover:text-blue-500">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-500">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-blue-500">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-blue-500">Risk Disclosure</a></li>
+                        <li><a href="#" class="hover:text-blue-500">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2025 TradePro. All rights reserved. Trading involves risk.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
+    <script>
+        // Dynamically load scripts
+        const scripts = ["autocomplete.js","summery.js", "watchlist.js", "auth.js"]; // Add your script filenames here
+
+        scripts.forEach(scriptName => {
+            const script = document.createElement("script");
+            script.src = scriptName;
+            script.async = true;  // Ensures scripts load asynchronously
+            document.body.appendChild(script);
+        });
+    </script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Chart</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="autoComplete.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+    <body class="bg-gray-100">
+        <!-- Market Status Bar -->
+        <div class="bg-gray-900 text-white py-2">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between items-center text-sm">
+                    <div class="flex space-x-6">
+                        <span>S&P 500: <span class="text-green-500">+1.2%</span></span>
+                        <span>NASDAQ: <span class="text-green-500">+0.8%</span></span>
+                        <span>DOW: <span class="text-red-500">-0.3%</span></span>
+                    </div>
+                    <div>
+                        <span>Market Status: <span class="text-green-500">Open</span> | Last Updated: 14:30 EST</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Navigation -->
+        <nav class="bg-white shadow-lg sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center space-x-8">
+                        <span class="text-2xl font-bold text-blue-600">TradePro</span>
+                        <div class="hidden md:flex items-center space-x-6">
+                            <a href="stock-chart.html" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Dashboard</a>
+                            <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Markets</a>
+                            <a href="watchlist.html" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Watchlist</a>
+                            <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Portfolio</a>
+                            <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">News</a>
+                        </div>
+                    </div>
+                    <form class="flex items-center space-x-4" id="search-form">
+                        <div class="flex items-center space-x-4" id="searchForm">
+                            <input type="search" placeholder="Search stocks..." 
+                                id="query"
+                                class="bg-gray-100 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </form>
+                    <style>
+                        #query{
+                            margin-left: 350px;
+                        }
+                    </style>
+                    
+                    <script>
+                    document.getElementById("search-form").addEventListener("submit", function (event) {
+                        event.preventDefault(); // Prevents page refresh
+                    
+                        let stockSymbol = document.getElementById("query").value.trim().toUpperCase(); // Convert input to uppercase
+                    
+                        if (stockSymbol) {
+                            // Redirect to the chart page with stock symbol
+                            window.location.href = `csh.html?symbol=${stockSymbol}`;
+                        }
+                    });
+                    </script>
+                    
+                   
+                      
+                    
+                        <div id="suggestions"></div>
+                        <div id="results"></div>
+                   
+                        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300 flex items-center space-x-4 tracking-tighter h-10 mt-2">
+                            Trade 
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+
+    <main>
+        <div class="stock-container">
+            <h2 id="stock-name">Apple (AAPL)</h2>
+            <div class="chart-container">
+                <!-- TradingView Widget -->
+                <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                      "width": "800",
+                      "height": "400",
+                      "symbol": "NASDAQ:AAPL",
+                      "interval": "5",
+                      "timezone": "Etc/UTC",
+                      "theme": "light",
+                      "style": "1",
+                      "locale": "en",
+                      "allow_symbol_change": true,
+                      "calendar": false,
+                      "support_host": "https://www.tradingview.com"
+                    }
+                    </script>
+                    <a href="fullscreen.html" class="fullscreen-btn">View Full Screen</a>
+                </div>
+            </div>
+        </div>
+
+        <aside class="watchlist">
+            <h3>Watchlist</h3>
+            <ul>
+                <li>MSFT - Microsoft <span class="price">$325.45 <span class="green">+1.2%</span></span></li>
+                <li>GOOGL - Alphabet <span class="price">$142.80 <span class="red">-0.5%</span></span></li>
+            </ul>
+            <button id="add-stock">+ Add</button>
+        </aside>
+    </main>
+
+    <script>
+        // Get stock symbol from URL
+        const params = new URLSearchParams(window.location.search);
+        const stockSymbol = params.get("symbol");
+
+        if (stockSymbol) {
+            document.getElementById("stock-name").innerText = `${stockSymbol} Stock Chart`;
+            // You can modify the TradingView widget to dynamically change the stock symbol
+            const tradingViewScript = document.querySelector('.tradingview-widget-container script');
+            if (tradingViewScript) {
+                tradingViewScript.textContent = `
+                {
+                  "width": "900",
+                  "height": "400",
+                  "symbol": "NASDAQ:${stockSymbol}",
+                  "interval": "5",
+                  "timezone": "Etc/UTC",
+                  "theme": "light",
+                  "style": "1",
+                  "locale": "en",
+                  "allow_symbol_change": true,
+                  "calendar": false,
+                  "support_host": "https://www.tradingview.com"
+                }`;
+            }
+        } else {
+            alert("No stock symbol provided.");
+        }
+    </script>
+    <style>
+        /* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f5f7;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px 30px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a73e8;
+}
+.fullscreen-btn, .back-btn {
+    display: inline-block;
+    margin-top: 50px;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    background: blue;
+    border-radius: 5px;
+    font-weight: bold;
+    
+}
+
+.fullscreen-btn:hover, .back-btn:hover {
+    background: darkblue;
+}
+
+#search-bar {
+    width: 300px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#trade-btn {
+    background-color: #1a73e8;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Main Layout */
+main {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Stock Chart Section */
+.stock-container {
+    flex: 2;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#stock-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Chart */
+.chart-container {
+    background: #f4f5f7;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Watchlist */
+.watchlist {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        width: 250px;  /* Set a fixed width */
+        flex-shrink: 0; /* Prevent shrinking */
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+.watchlist h3 {
+    margin-bottom: 10px;
+}
+
+.watchlist ul {
+    list-style: none;
+    padding: 0;
+}
+
+.watchlist li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.price {
+    font-weight: bold;
+}
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+
+#add-stock {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    </style>
+
+</body>
+</html>

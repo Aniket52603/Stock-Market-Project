@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Summary</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="autoComplete.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script src="line_chart_p.js"></script>
+<script src="autoComplete_p.js"></script>
+<script src="stock-login.js"></script>
+<script type="module" src="auth.js"></script>
+<script src="combine.js"></script>
+<script src="watchlist.js"></script>
+<script src="summery.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  
+  }
+  h1{
+    text-align: center;
+    margin: 20px;
+    font-size: larger;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 19px;
+    border-radius:0.5px;
+  }
+  th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  th {
+    background-color: #f4E3f6;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+    <div class="bg-gray-900 text-white py-2">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center text-sm">
+                <div class="flex space-x-6">
+                    <span>S&P 500: <span class="text-green-500">+1.2%</span></span>
+                    <span>NASDAQ: <span class="text-green-500">+0.8%</span></span>
+                    <span>DOW: <span class="text-red-500">-0.3%</span></span>
+                </div>
+                <div>
+                    <span>Market Status: <span class="text-green-500">Open</span> | Last Updated: 14:30 EST</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <span class="text-2xl font-bold text-blue-600">TradePro</span>
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="stock-chart.html" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Dashboard</a>
+                        <a href="summery.html" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Markets</a>
+                        <a href="watchlist.html" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Watchlist</a>
+                        <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">Portfolio</a>
+                        <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors duration-300">News</a>
+                    </div>
+                </div>
+                <form class="flex items-center space-x-4" id="search-form">
+                    <div class="flex items-center space-x-4" id="searchForm">
+                        <input type="search" placeholder="Search stocks..." 
+                            id="query"
+                            class="bg-gray-100 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div id="suggestions"></div>
+                    <div id="results"></div>
+                </form>
+                <style>
+                    #query{
+                        margin-left: 350px;
+                    }
+                </style>
+                
+                <script>
+                document.getElementById("search-form").addEventListener("submit", function (event) {
+                    event.preventDefault(); // Prevents page refresh
+                
+                    let stockSymbol = document.getElementById("query").value.trim().toUpperCase(); // Convert input to uppercase
+                
+                    if (stockSymbol) {
+                        // Redirect to the chart page with stock symbol
+                        window.location.href = `stock-chart.html?symbol=${stockSymbol}`;
+                    }
+                });
+                </script>
+                
+               
+                  
+                
+          
+                
+                <button id="profile-btn" style="display: none;">Profile</button>
+        <!-- This button will change to a profile icon when logged in -->
+        <a id="auth-button" href="login.html" style="margin-top: 10px;">
+            Login/Sign In
+        </a>
+            </div>  
+                </div>
+            </div>
+        </div>
+    </nav>
+
+<h1>Market Summary</h1>
+<table id="marketTable">
+  <thead>
+    <tr>
+      <th>Exchange</th>
+      <th>Symbol</th>
+      <th>Quote Type</th>
+      <th>Previous Close</th>
+      <th>Regular Market Price</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  // Function to fetch market summary data
+  async function fetchMarketSummary() {
+    try {
+      const response = await fetch('/api/market-summary');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      const tableBody = document.querySelector('#marketTable tbody');
+      tableBody.innerHTML = '';
+
+      // Populate table with API data
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = 
+          `<td>${item.fullExchangeName || 'N/A'}</td>
+          <td>${item.symbol || 'N/A'}</td>
+          <td>${item.quoteType || 'N/A'}</td>
+          <td>${item.spark?.previousClose || 'N/A'}</td>
+          <td>${item.spark?.close?.slice(-1)[0] || 'N/A'}</td>`;
+        tableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('Error fetching market summary:', error);
+
+      // Create an error message element
+      const errorMessage = document.createElement('p');
+      errorMessage.style.color = 'red';
+      errorMessage.textContent = 'Failed to load market summary data. Please try again later.';
+      document.body.appendChild(errorMessage);
+    }
+  }
+
+  // Fetch data on page load
+  fetchMarketSummary();
+</script>
+<script>
+  // Dynamically load scripts
+  const scripts = ["summery.js", "watchlist.js", "auth.js"]; // Add your script filenames here
+
+  scripts.forEach(scriptName => {
+      const script = document.createElement("script");
+      script.src = scriptName;
+      script.async = true;  // Ensures scripts load asynchronously
+      document.body.appendChild(script);
+  });
+</script>
+
+</body>
+</html>

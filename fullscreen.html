@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Screen Chart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="full-chart-container">
+        <div class="chart-backbtn">
+        <h2>Apple (AAPL) - Full Screen</h2>
+    </div>
+    <style>
+        .chart-backbtn{
+             display: flex;  /* Enables flexbox */
+             gap: 10px;
+             height: 50px; 
+        }
+        .back-btn{
+            display: inline-block;
+            margin-left: 90%;
+             padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background: blue;
+            border-radius: 5px;
+            font-weight: bold;
+            }
+        .tradingview-widget-container{
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* Adds a subtle shadow */
+                border-radius: 10px; /* Rounds the corners */
+                overflow: hidden; /* Ensures the chart content stays within the rounded corners */
+                background: white; /* Adds a white background */
+                padding: -50px; /* Adds padding to separate content from edges */
+                height: 700px;
+                width: 800px;
+                margin-left: 20px;
+            
+        }
+
+        
+    </style>
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+            {
+                "width": "1450",
+                "height": "600",
+                "symbol": "NASDAQ:AAPL",
+                "interval": "5",
+                "timezone": "Etc/UTC",
+                "theme": "light",
+                "style": "1",
+                "locale": "en",
+                "allow_symbol_change": true,
+                "calendar": false,
+                "support_host": "https://www.tradingview.com"
+            }
+            </script>
+        </div>
+
+        <!-- Back Button -->
+        <a href="index.html" class="back-btn">Go Back</a>
+    </div>
+
+</body>
+</html>
